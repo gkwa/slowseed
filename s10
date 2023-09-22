@@ -4,7 +4,9 @@ set -x
 set -e
 set -u
 
-kind create cluster --config=kind-config.yaml
+if ! kind get clusters | grep slowseed; then
+    kind create cluster --config=kind-config.yaml --name slowseed
+fi
 
 kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v0.5.1/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml
 kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v0.5.1/config/crd/standard/gateway.networking.k8s.io_gateways.yaml
@@ -18,3 +20,17 @@ helm repo add cilium https://helm.cilium.io
 helm upgrade --install cilium cilium/cilium --version 1.13.0 --namespace kube-system --set kubeProxyReplacement=strict --set gatewayAPI.enabled=true
 
 cilium config view | grep enable-gateway-api
+
+kubectl get gatewayclasses.gateway.networking.k8s.io
+
+kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.12/samples/bookinfo/platform/kube/bookinfo.yaml
+
+kubectl get pods
+kubectl get svc
+
+kubectl apply -f https://raw.githubusercontent.com/cilium/cilium/1.13.0/examples/kubernetes/gateway/basic-http.yaml
+
+kubectl get gateway
+
+GATEWAY=$(kubectl get gateway my-gateway -o jsonpath='{.status.addresses[0].value}')
+echo $GATEWAY

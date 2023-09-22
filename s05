@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -e
+set -u
+
+if ! command task --version &>/dev/null; then
+    curl -fsSL https://raw.githubusercontent.com/taylormonacelli/ringgem/master/install-go-task-on-linux.sh | bash
+fi
+
+[[ ! -d ringgem ]] && git clone https://github.com/taylormonacelli/ringgem
+cd ringgem && git pull && cd ..
+cd ringgem && task follow-cilium-gateway-tutorial && cd ..

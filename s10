@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+set -x
+set -e
+set -u
+
+kind create cluster --config=kind-config.yaml
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v0.5.1/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v0.5.1/config/crd/standard/gateway.networking.k8s.io_gateways.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v0.5.1/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v0.5.1/config/crd/experimental/gateway.networking.k8s.io_referencegrants.yaml
+
+kubectl get crd gatewayclasses.gateway.networking.k8s.io
+
+helm repo add cilium https://helm.cilium.io
+
+helm upgrade --install cilium cilium/cilium --version 1.13.0 --namespace kube-system --set kubeProxyReplacement=strict --set gatewayAPI.enabled=true
+
+cilium config view | grep enable-gateway-api

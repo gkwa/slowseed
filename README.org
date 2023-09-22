@@ -1,11 +1,13 @@
-* My Project
+* 
 
-This is a description of my project.
+** summary
 
-** Installation
+https://isovalent.com/blog/post/tutorial-getting-started-with-the-cilium-gateway-api/
 
-To install my project, run this command: go install myproject
+** kind create cluster
 
-** Usage
+https://kind.sigs.k8s.io/docs/user/configuration/
 
-To use my project, run this command: myproject
+** deploy Cilium
+
+https://isovalent.com/blog/post/tutorial-tips-and-tricks-to-install-cilium/
